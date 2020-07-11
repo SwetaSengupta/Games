@@ -1,75 +1,240 @@
+import pygame
 
+#Initializes PyGame
 pygame.init()
 
-#Initial Values
-win_width = 750
-win_height = 750
-rows = 5
-columns = 5
-pad = 10
+#Creates a window for game
+win = pygame.display.set_mode((550,550))
 
-#Calculations
-t_width = (win_width - ((rows + 1) * pad)) // rows
-t_height = (win_height - ((columns + 1) * pad)) // columns
+#Sets the title of window
+pygame.display.set_caption('PyGame Tic-Tac-Toe')
 
-win = pygame.display.set_mode((win_width, win_height))
+board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
-pygame.display.set_caption('Tic Tac Toe')
+#Draws the game board
+first = pygame.draw.rect(win, (255, 255, 255), (25,25,150,150))
+second = pygame.draw.rect(win, (255,255,255), (200,25,150,150))
+third = pygame.draw.rect(win, (255,255,255), (375,25,150,150))
+fourth = pygame.draw.rect(win, (255,255,255), (25,200,150,150))
+fifth = pygame.draw.rect(win, (255,255,255), (200,200,150,150))
+sixth = pygame.draw.rect(win, (255,255,255), (375,200,150,150))
+seventh = pygame.draw.rect(win, (255,255,255), (25,375,150,150))
+eighth = pygame.draw.rect(win, (255,255,255), (200,375,150,150))
+ninth = pygame.draw.rect(win, (255,255,255), (375,375,150,150))
 
-white = (255, 255, 255)
-red = (255, 0, 0)
-green = (0, 255, 0)
 
-class Tile(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface([t_width, t_height])
-        self.image.fill(white)
-        self.rect = self.image.get_rect()
+#Sets first player's shape
+draw_object = 'circle'
+
+#Used to see if space is taken
+first_open = True
+second_open = True
+third_open = True
+fourth_open = True
+fifth_open = True
+sixth_open = True
+seventh_open = True
+eighth_open = True
+ninth_open = True
+
+#board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+def win_check(num):
+    for row in board:
+        for tile in row:
+            if tile == num:
+                continue
+            else:
+                break
+        else:
+            return True
+
+    for column in range(3):
+        for row in board:
+            if row[column] == num:
+                continue
+            else:
+                break
+        else:
+            return True
     
-tile_list = pygame.sprite.Group()
-taken_list = pygame.sprite.Group()
-    
-for row in range(rows):
-    for column in range(columns):
-        tile = Tile()
-        tile.rect.x = pad + ((t_width + pad) * row)
-        tile.rect.y = pad + ((t_height + pad) * column)
-        tile_list.add(tile)
-tile_list.draw(win)
-    
-def redraw():
-    pygame.display.update()
-    
-draw_object = 'rect'
 
+    for tile in range(3):
+        if board[tile][tile] == num:
+            continue
+        else:
+            break
+    else:
+        return True
+    
+    
+    for tile in range(3):
+        if board[tile][2-tile] == num:
+            continue
+        else:
+            break
+    else:
+        return True
+
+
+
+#Main Loop
 run = True
-
+won = False
 while run:
-    
+
+    #Refresh Time
     pygame.time.delay(100)
-    
+
+
+    #Pygame Events
     for event in pygame.event.get():
+
+        #Quit Event
         if event.type == pygame.QUIT:
             run = False
+
+        #Space bar to reset
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                tile_list.draw(win)
-                taken_list = pygame.sprite.Group()
+                first_open = True
+                second_open = True
+                third_open = True
+                fourth_open = True
+                fifth_open = True
+                sixth_open = True
+                seventh_open = True
+                eighth_open = True
+                ninth_open = True
+                run = True
+                won = False
+                board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+                #pygame.draw.rect(surface, (color), (startx,starty,length width))
+                first = pygame.draw.rect(win, (255,255,255), (25,25,150,150))
+                second = pygame.draw.rect(win, (255,255,255), (200,25,150,150))
+                third = pygame.draw.rect(win, (255,255,255), (375,25,150,150))
+                fourth = pygame.draw.rect(win, (255,255,255), (25,200,150,150))
+                fifth = pygame.draw.rect(win, (255,255,255), (200,200,150,150))
+                sixth = pygame.draw.rect(win, (255,255,255), (375,200,150,150))
+                seventh = pygame.draw.rect(win, (255,255,255), (25,375,150,150))
+                eighth = pygame.draw.rect(win, (255,255,255), (200,375,150,150))
+                ninth = pygame.draw.rect(win, (255,255,255), (375,375,150,150))
+
+        #Used to see which space is clicked
         if event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
-            for i in tile_list:
-                if i.rect.collidepoint(pos) and i not in taken_list:
-                    taken_list.add(i)
-                    if draw_object == 'rect':
-                        pygame.draw.rect(win, red, (i.rect.x + pad, i.rect.y + pad, t_width - (2 * pad), t_height - (2 * pad)))
-                        draw_object = 'circle'
-                    else:
-                        if t_width < t_height:
-                            pygame.draw.circle(win, green, (i.rect.center), (t_width - 2 * pad) // 2)
-                        else:
-                            pygame.draw.circle(win, green, (i.rect.center), (t_height - 2 * pad) // 2)
-                        draw_object = 'rect'
-    redraw()
 
+            #Checks if mouse position is in a space and if space is available
+            if won != True:
+                if first.collidepoint(pos) and first_open:
+                    #Draws a shapes based on whose turn it is
+                    if draw_object == 'circle':
+                        #pygame.draw.circle(surface, (color), (centerx, centery),radius)
+                        pygame.draw.circle(win,(255,0,0), (100,100),50)
+                        draw_object = 'rect'
+                        board[0][0] = 1
+                    else:
+                        pygame.draw.rect(win,(0,255,0), (50,50,100, 100))
+                        draw_object = 'circle'
+                        board[0][0] = 2
+                    #Marks this space as taken
+                    first_open = False
+
+                if second.collidepoint(pos) and second_open:
+                    if draw_object == 'circle':
+                        pygame.draw.circle(win,(255,0,0), (275,100),50)
+                        draw_object = 'rect'
+                        board[0][1] = 1
+                    else:
+                        pygame.draw.rect(win,(0,255,0), (225,50,100, 100))
+                        draw_object = 'circle'
+                        board[0][1] = 2
+                    second_open = False
+
+                if third.collidepoint(pos) and third_open:
+                    if draw_object == 'circle':
+                        pygame.draw.circle(win,(255,0,0), (450,100),50)
+                        draw_object = 'rect'
+                        board[0][2] = 1
+                    else:
+                        pygame.draw.rect(win,(0,255,0), (400,50,100, 100))
+                        draw_object = 'circle'
+                        board[0][2] = 2
+                    third_open = False
+
+                if fourth.collidepoint(pos) and fourth_open:
+                    if draw_object == 'circle':
+                        pygame.draw.circle(win,(255,0,0), (100,275),50)
+                        draw_object = 'rect'
+                        board[1][0] = 1
+                    else:
+                        pygame.draw.rect(win,(0,255,0), (50,225,100, 100))
+                        draw_object = 'circle'
+                        board[1][0] = 2
+                    fourth_open = False
+
+                if fifth.collidepoint(pos) and fifth_open:
+                    if draw_object == 'circle':
+                        pygame.draw.circle(win,(255,0,0), (275,275),50)
+                        draw_object = 'rect'
+                        board[1][1] = 1
+                    else:
+                        pygame.draw.rect(win,(0,255,0), (225,225,100, 100))
+                        draw_object = 'circle'
+                        board[1][1] = 2
+                    fifth_open = False
+
+                if sixth.collidepoint(pos) and sixth_open:
+                    if draw_object == 'circle':
+                        pygame.draw.circle(win,(255,0,0), (450,275),50)
+                        draw_object = 'rect'
+                        board[1][2] = 1
+                    else:
+                        pygame.draw.rect(win,(0,255,0), (400,225,100, 100))
+                        draw_object = 'circle'
+                        board[1][2] = 2
+                    sixth_open = False
+
+                if seventh.collidepoint(pos) and seventh_open:
+                    if draw_object == 'circle':
+                        pygame.draw.circle(win,(255,0,0), (100,450),50)
+                        draw_object = 'rect'
+                        board[2][0] = 1
+                    else:
+                        pygame.draw.rect(win,(0,255,0), (50,400,100, 100))
+                        draw_object = 'circle'
+                        board[2][0] = 2
+                    seventh_open = False
+
+                if eighth.collidepoint(pos) and eighth_open:
+                    if draw_object == 'circle':
+                        pygame.draw.circle(win,(255,0,0), (275,450),50)
+                        draw_object = 'rect'
+                        board[2][1] = 1
+                    else:
+                        pygame.draw.rect(win,(0,255,0), (225,400,100, 100))
+                        draw_object = 'circle'
+                        board[2][1] = 2
+                    eighth_open = False
+
+                if ninth.collidepoint(pos) and ninth_open:
+                    if draw_object == 'circle':
+                        pygame.draw.circle(win,(255,0,0), (450,450),50)
+                        draw_object = 'rect'
+                        board[2][2] = 1
+                    else:
+                        pygame.draw.rect(win,(0,255,0), (400,400,100, 100))
+                        draw_object = 'circle'
+                        board[2][2] = 2
+                    ninth_open = False
+
+    if win_check(1):
+        won = True
+    if win_check(2):
+        won = True
+
+    #Updates screen with new shapes
+    pygame.display.update()
+
+
+#Closes game once loop is broken
 pygame.quit()
