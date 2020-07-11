@@ -14,7 +14,8 @@ if sys.platform == "win32":
 setup(  name = "tic tac toe game by sweta",
         version = "0.1",
         description = "My tic tac toe game!",
-        options={"build_exe": {"packages": ["pygame"]}},
+        options={"build_exe": {"packages": ["pygame"]
+        "include_files":["beep1.ogg","beep2.ogg","beep3.ogg","wargamesclip.ogg"]}},
         executables=executables
 )
         
